@@ -6,6 +6,11 @@ import { collection, addDoc } from 'firebase/firestore'
 import emailjs from '@emailjs/browser'
 
 export default function Contact() {
+  // Initialisons EmailJS au chargement du composant
+  useEffect(() => {
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!)
+  }, [])
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -103,8 +108,6 @@ export default function Contact() {
   const submitForm = async () => {
     setIsSubmitting(true)
     try {
-      emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!)
-
       const cleanedData = {
         ...formData,
         phone: formData.phone.replace(/\s/g, ''),
@@ -126,8 +129,7 @@ export default function Contact() {
           date: formatDateForEmail(formData.date),
           time_slot: formatTimeSlot(formData.timeSlot),
           to_email: 'support@javachrist.fr',
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+        }
       )
 
       await emailjs.send(
