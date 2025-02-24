@@ -3,19 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1e40af; /* bleu foncé pour les titres */
+  --background: #f8fafc; /* gris très clair pour le fond */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  h1 {
+    @apply mb-6 text-4xl font-bold text-blue-600;
+  }
+  h2 {
+    @apply mb-4 text-2xl font-bold text-blue-600;
+  }
+  body {
+    @apply bg-gray-50 text-gray-700;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .container {
+    @apply mx-auto max-w-7xl px-4;
+  }
+  .btn-primary {
+    @apply rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-md transition-colors duration-300 hover:bg-blue-700;
+  }
 }
