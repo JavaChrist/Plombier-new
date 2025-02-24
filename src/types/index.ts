@@ -29,7 +29,6 @@ export interface Intervention {
   description: string
   montantHT: number
   tva: number
-  montantTTC?: number
   dateCreation?: string
   photosAvant?: string[]
   photosApres?: string[]

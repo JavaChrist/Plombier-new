@@ -10,15 +10,13 @@ import {
   setDoc,
 } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { storage } from '@/config/firebase'
-import { db } from '@/config/firebase'
-import { Intervention } from '@/types'
+import { storage, db, auth } from '../../../config/firebase'
+import { Intervention } from '../../../types'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
-import DeleteModal from '@/components/DeleteModal'
-import PhotosSection from '@/components/PhotosSection'
-import HistoriqueSection from '@/components/HistoriqueSection'
-import { auth } from '@/config/firebase'
-import Auth from '@/components/Auth'
+import DeleteModal from '../../../components/DeleteModal'
+import PhotosSection from '../../../components/PhotosSection'
+import HistoriqueSection from '../../../components/HistoriqueSection'
+import Auth from '../../../components/Auth'
 import Link from 'next/link'
 
 export default function InterventionDetails() {
@@ -413,11 +411,8 @@ export default function InterventionDetails() {
       <div className='flex items-center justify-between'>
         <p className='font-medium'>
           Montant:{' '}
-          {(
-            intervention.montantTTC ??
-            intervention.montantHT * (1 + intervention.tva / 100)
-          ).toFixed(2)}
-          € TTC
+          {(intervention.montantHT * (1 + intervention.tva / 100)).toFixed(2)}€
+          TTC
         </p>
         <div className='flex gap-2'>
           {!editing ? (

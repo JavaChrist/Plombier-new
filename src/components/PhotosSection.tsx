@@ -10,7 +10,7 @@ interface PhotosSectionProps {
 }
 
 export default function PhotosSection({
-  intervention,
+  intervention: _intervention,
   editing,
   onPhotoUpload,
   uploading,

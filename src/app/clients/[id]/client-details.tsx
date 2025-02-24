@@ -423,7 +423,9 @@ export default function ClientDetails({ id }: ClientDetailsProps) {
                     </p>
                     <p>Type: {intervention.type}</p>
                     <p>Statut: {intervention.statut}</p>
-                    <p>Montant: {intervention.montantTTC.toFixed(2)}€ TTC</p>
+                    <p>Montant: {(
+                      intervention.montantHT * (1 + intervention.tva / 100)
+                    ).toFixed(2)}€ TTC</p>
                   </div>
                   <div className="flex gap-2">
                     <Link

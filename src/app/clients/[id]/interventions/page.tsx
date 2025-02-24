@@ -61,11 +61,11 @@ export default function InterventionsClient() {
                 Liste des interventions ({interventions.length})
               </h2>
               <p className='text-sm text-gray-500'>
-                {interventions.filter(i => i.status === 'planifiee').length}{' '}
+                {interventions.filter(i => i.statut === 'planifiee').length}{' '}
                 planifiée(s),{' '}
-                {interventions.filter(i => i.status === 'en_cours').length} en
+                {interventions.filter(i => i.statut === 'en_cours').length} en
                 cours,{' '}
-                {interventions.filter(i => i.status === 'terminee').length}{' '}
+                {interventions.filter(i => i.statut === 'terminee').length}{' '}
                 terminée(s)
               </p>
             </div>
@@ -89,14 +89,14 @@ export default function InterventionsClient() {
                       </span>
                       <span
                         className={`rounded-full px-2 py-1 text-sm ${
-                          intervention.status === 'planifiee'
+                          intervention.statut === 'planifiee'
                             ? 'bg-blue-100 text-blue-800'
-                            : intervention.status === 'en_cours'
+                            : intervention.statut === 'en_cours'
                               ? 'bg-yellow-100 text-yellow-800'
                               : 'bg-green-100 text-green-800'
                         }`}
                       >
-                        {intervention.status.toUpperCase()}
+                        {intervention.statut.toUpperCase()}
                       </span>
                     </div>
                     <p className='text-gray-600'>{intervention.description}</p>
@@ -116,7 +116,7 @@ export default function InterventionsClient() {
                     >
                       Modifier
                     </Link>
-                    {intervention.status === 'terminee' && (
+                    {intervention.statut === 'terminee' && (
                       <Link
                         href={`/facture?interventionId=${intervention.id}`}
                         className='rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600'

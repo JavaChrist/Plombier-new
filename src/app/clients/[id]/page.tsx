@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import ClientDetails from './ClientDetails';
+import ClientDetails from './client-details';
 import Link from 'next/link';
 
 type PageProps = {
