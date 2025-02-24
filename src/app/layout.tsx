@@ -9,8 +9,11 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Plombier Site',
-  description: 'Application de gestion pour plombier',
+  title: 'Plombier',
+  description: 'Application de gestion plomberie',
+  icons: {
+    icon: '/assets/favicon.ico'
+  }
 }
 
 export default function RootLayout({
