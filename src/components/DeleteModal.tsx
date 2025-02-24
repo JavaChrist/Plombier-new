@@ -1,23 +1,25 @@
 "use client";
 
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
+interface DeleteModalProps {
+  onConfirm: () => void | Promise<void>
+  onCancel: () => void
 }
 
-export default function Modal({ isOpen, onClose, children }: ModalProps) {
-  if (!isOpen) return null;
-
+export default function DeleteModal({ onConfirm, onCancel }: DeleteModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div 
-        className="fixed inset-0 bg-black opacity-50"
-        onClick={onClose}
-      ></div>
-      <div className="bg-white rounded-lg shadow-xl z-50 w-full max-w-md mx-4">
-        {children}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="rounded-lg bg-white p-6">
+        <h3 className="mb-4 text-lg font-bold">Confirmer la suppression</h3>
+        <p className="mb-6">Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+        <div className="flex justify-end gap-4">
+          <button onClick={onCancel} className="px-4 py-2 text-gray-600 hover:text-gray-800">
+            Annuler
+          </button>
+          <button onClick={onConfirm} className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">
+            Supprimer
+          </button>
+        </div>
       </div>
     </div>
-  );
+  )
 } 

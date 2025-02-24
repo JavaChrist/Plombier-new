@@ -1,7 +1,9 @@
+import PrivateRoute from '@/components/PrivateRoute';
+
 export default function InterventionsLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  return <>{children}</>
-}
+  return <PrivateRoute>{children}</PrivateRoute>;
+} 

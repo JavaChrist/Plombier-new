@@ -1,26 +1,45 @@
 export interface Client {
-    id: string;
-    nom: string;
-    prenom: string;
-    email: string;
-    telephone: string;
-    adresse: string;
+  id: string
+  idClient: string
+  nom: string
+  prenom: string
+  email: string
+  telephone: string
+  adresse: {
+    rue: string
+    codePostal: string
+    ville: string
   }
-  
-  export interface Intervention {
-    id: string;
-    clientId: string;
-    date: Date;
-    status: 'planifié' | 'en_cours' | 'terminé';
-    description: string;
-    montantHT: number;
-  }
-  
-  export interface Article {
-    id: string;
-    nom: string;
-    prix: number;
-    categorie: string;
-    description?: string;
-  }
-  
+  notes?: string
+}
+
+interface HistoriqueItem {
+  date: string
+  action: string
+  description: string
+  utilisateur: string
+}
+
+export interface Intervention {
+  id: string
+  idClient: string
+  dateIntervention: string
+  statut: 'planifiee' | 'en_cours' | 'terminee' | 'annulee'
+  type: string
+  description: string
+  montantHT: number
+  tva: number
+  montantTTC?: number
+  dateCreation?: string
+  photosAvant?: string[]
+  photosApres?: string[]
+  historique?: HistoriqueItem[]
+}
+
+export interface Article {
+  id: string
+  nom: string
+  prix: number
+  categorie: string
+  description?: string
+}
