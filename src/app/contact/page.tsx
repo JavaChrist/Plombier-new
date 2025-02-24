@@ -108,17 +108,6 @@ export default function Contact() {
   const submitForm = async () => {
     setIsSubmitting(true)
     try {
-      // Ajoutons des logs pour vérifier les variables
-      console.log('Service ID:', process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID)
-      console.log(
-        'Template Admin:',
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_ADMIN
-      )
-      console.log(
-        'Template Client:',
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_CLIENT
-      )
-
       const cleanedData = {
         ...formData,
         phone: formData.phone.replace(/\s/g, ''),
