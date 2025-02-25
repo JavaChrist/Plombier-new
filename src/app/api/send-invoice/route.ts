@@ -84,7 +84,7 @@ export async function POST(request: Request) {
       attachments: [
         {
           filename: `Facture_${facture.numeroFacture}.pdf`,
-          content: pdfBuffer,
+          content: Buffer.from(pdfBuffer),
         },
       ],
     }

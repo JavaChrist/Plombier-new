@@ -5,6 +5,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import Image from "next/image";
+import LogoUpload from '@/components/LogoUpload'
 
 const MAX_WIDTH = 800; // Largeur maximale
 const MAX_HEIGHT = 600; // Hauteur maximale
@@ -128,9 +129,11 @@ export default function ParametresPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Logo entreprise</h2>
 
+        <LogoUpload />
+
         {/* Prévisualisation du logo */}
         {currentLogo && (
-          <div className="mb-4">
+          <div className="mt-4">
             <Image
               src={currentLogo}
               alt="Logo actuel"

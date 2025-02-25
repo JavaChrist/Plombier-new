@@ -1,58 +1,60 @@
-import puppeteer from "puppeteer";
-import { FirebaseApp } from "firebase/app";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import puppeteer from 'puppeteer'
+import { FirebaseApp } from 'firebase/app'
+import { getStorage, ref, getDownloadURL } from 'firebase/storage'
+import { ConsoleMessage, HTTPRequest } from 'puppeteer'
 
 interface LigneFacture {
-  reference: string;
-  designation: string;
-  quantite: number;
-  prixUnitaire: number;
-  tva: 5.5 | 10 | 20;
+  reference: string
+  designation: string
+  quantite: number
+  prixUnitaire: number
+  tva: 5.5 | 10 | 20
 }
 
 interface Facture {
-  numeroFacture: string;
-  dateFacture: string;
+  numeroFacture: string
+  dateFacture: string
   client: {
-    nom: string;
-    prenom: string;
+    nom: string
+    prenom: string
+    email: string
     adresse: {
-      rue: string;
-      codePostal: string;
-      ville: string;
-    };
-  };
-  lignes: LigneFacture[];
+      rue: string
+      codePostal: string
+      ville: string
+    }
+  }
+  lignes: LigneFacture[]
   totaux: {
-    totalHT: number;
-    totalTVA: number;
-    totalTTC: number;
-  };
+    totalHT: number
+    totalTVA: number
+    totalTTC: number
+  }
 }
 
 interface EntrepriseInfo {
-  raisonSociale: string;
-  siret: string;
+  raisonSociale: string
+  siret: string
   adresse: {
-    rue: string;
-    codePostal: string;
-    ville: string;
-  };
-  tvaIntracommunautaire: string;
-  logo: string;
+    rue: string
+    codePostal: string
+    ville: string
+  }
+  tvaIntracommunautaire: string
+  logo: string
 }
 
 async function getImageAsBase64(url: string): Promise<string> {
   try {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString("base64");
-    const contentType = response.headers.get("content-type") || "image/png";
-    return `data:${contentType};base64,${base64}`;
+    const response = await fetch(url)
+    const arrayBuffer = await response.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    const base64 = buffer.toString('base64')
+    const contentType = response.headers.get('content-type') || 'image/png'
+    return `data:${contentType};base64,${base64}`
   } catch (error) {
-    console.error("❌ Erreur lors de la conversion en base64:", error);
-    throw error;
+    console.error('❌ Erreur lors de la conversion en base64:', error)
+    throw error
   }
 }
 
@@ -62,33 +64,30 @@ export async function generateFacturePDF(
   firebaseApp: FirebaseApp
 ) {
   // Récupérer le logo en base64
-  let logoBase64 = "";
+  let logoBase64 = ''
   if (entreprise.logo) {
     try {
-      console.log(
-        "🔍 Tentative de chargement du logo depuis:",
-        entreprise.logo
-      );
-      const storage = getStorage(firebaseApp);
-      const logoRef = ref(storage, "entreprise/logo.png");
-      const logoUrl = await getDownloadURL(logoRef);
-      console.log("📥 URL du logo obtenue:", logoUrl);
+      console.log('🔍 Tentative de chargement du logo depuis:', entreprise.logo)
+      const storage = getStorage(firebaseApp)
+      const logoRef = ref(storage, 'entreprise/logo.png')
+      const logoUrl = await getDownloadURL(logoRef)
+      console.log('📥 URL du logo obtenue:', logoUrl)
 
-      logoBase64 = await getImageAsBase64(logoUrl);
-      console.log("🖼️ Logo converti en base64, taille:", logoBase64.length);
+      logoBase64 = await getImageAsBase64(logoUrl)
+      console.log('🖼️ Logo converti en base64, taille:', logoBase64.length)
 
       // Vérifier que nous avons bien l'image en base64
-      if (!logoBase64.startsWith("data:image")) {
-        console.error("❌ Format de logo invalide");
-        logoBase64 = "";
+      if (!logoBase64.startsWith('data:image')) {
+        console.error('❌ Format de logo invalide')
+        logoBase64 = ''
       } else {
-        console.log("✅ Logo chargé avec succès");
+        console.log('✅ Logo chargé avec succès')
       }
     } catch (error) {
-      console.error("❌ Erreur lors du chargement du logo:", error);
+      console.error('❌ Erreur lors du chargement du logo:', error)
     }
   } else {
-    console.log("ℹ️ Pas de logo configuré dans entreprise.logo");
+    console.log('ℹ️ Pas de logo configuré dans entreprise.logo')
   }
 
   const html = `
@@ -255,7 +254,7 @@ export async function generateFacturePDF(
               />
             </div>
           `
-              : "<!-- Pas de logo -->"
+              : '<!-- Pas de logo -->'
           } 
 
           <div class="header-content">
@@ -263,8 +262,8 @@ export async function generateFacturePDF(
               <h2>${entreprise.raisonSociale}</h2>
               <p>${entreprise.adresse.rue}</p>
               <p>${entreprise.adresse.codePostal} ${
-    entreprise.adresse.ville
-  }</p>
+                entreprise.adresse.ville
+              }</p>
               <p>SIRET : ${entreprise.siret}</p>
               <p>TVA : ${entreprise.tvaIntracommunautaire}</p>
             </div>
@@ -273,8 +272,8 @@ export async function generateFacturePDF(
               <p>${facture.client.nom} ${facture.client.prenom}</p>
               <p>${facture.client.adresse.rue}</p>
               <p>${facture.client.adresse.codePostal} ${
-    facture.client.adresse.ville
-  }</p>
+                facture.client.adresse.ville
+              }</p>
             </div>
           </div>
         </div>
@@ -282,7 +281,7 @@ export async function generateFacturePDF(
         <div class="facture-details">
           <h1>Facture N° ${facture.numeroFacture}</h1>
           <p>Date : ${new Date(facture.dateFacture).toLocaleDateString(
-            "fr-FR"
+            'fr-FR'
           )}</p>
         </div>
 
@@ -301,7 +300,7 @@ export async function generateFacturePDF(
             <tbody>
               ${facture.lignes
                 .map(
-                  (ligne) => `
+                  ligne => `
                 <tr>
                   <td>${ligne.reference}</td>
                   <td>${ligne.designation}</td>
@@ -312,7 +311,7 @@ export async function generateFacturePDF(
                 </tr>
               `
                 )
-                .join("")}
+                .join('')}
             </tbody>
           </table>
         </div>
@@ -336,49 +335,55 @@ export async function generateFacturePDF(
       </div>
     </body>
     </html>
-  `;
+  `
 
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+    ],
+  })
 
-  const page = await browser.newPage();
+  const page = await browser.newPage()
 
   // Ajouter plus de logs pour le débogage
-  page.on("console", (msg) => console.log("Page log:", msg.text()));
-  page.on("pageerror", (err) => console.error("Page error:", err));
-  page.on("requestfailed", (req) =>
-    console.error("Request failed:", req.url())
-  );
+  page.on('console', (msg: ConsoleMessage) =>
+    console.log('Page log:', msg.text())
+  )
+  page.on('pageerror', (error: Error) => console.error('Page error:', error))
+  page.on('requestfailed', (request: HTTPRequest) =>
+    console.error('Request failed:', request.url())
+  )
 
-  await page.setContent(html);
+  await page.setContent(html)
 
   // Attendre que les images soient chargées
   await page.evaluate(() => {
     return Promise.all(
       Array.from(document.images)
-        .filter((img) => !img.complete)
+        .filter(img => !img.complete)
         .map(
-          (img) =>
-            new Promise((resolve) => {
-              img.onload = img.onerror = resolve;
+          img =>
+            new Promise(resolve => {
+              img.onload = img.onerror = resolve
             })
         )
-    );
-  });
+    )
+  })
 
   const pdf = await page.pdf({
-    format: "A4",
+    format: 'A4',
     margin: {
-      top: "10mm",
-      right: "15mm",
-      bottom: "15mm",
-      left: "15mm",
+      top: '10mm',
+      right: '15mm',
+      bottom: '15mm',
+      left: '15mm',
     },
     printBackground: true,
-  });
+  })
 
-  await browser.close();
-  return pdf;
+  await browser.close()
+  return pdf
 }

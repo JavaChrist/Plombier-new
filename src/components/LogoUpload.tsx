@@ -1,7 +1,21 @@
+'use client'
+
 import { useState } from 'react';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { db } from '@/config/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export default function LogoUpload() {
   const [uploading, setUploading] = useState(false);
+
+  const uploadLogo = async (file: File) => {
+    const storage = getStorage();
+    const logoRef = ref(storage, 'entreprise/logo.png');
+    await uploadBytes(logoRef, file);
+    await updateDoc(doc(db, 'entreprise', 'info'), {
+      logo: 'entreprise/logo.png'
+    });
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -13,7 +27,7 @@ export default function LogoUpload() {
       alert('✅ Logo mis à jour avec succès !');
     } catch (error) {
       console.error('❌ Erreur:', error);
-      alert('❌ Erreur lors de la mise à jour du logo');
+      alert('❌ Erreur lors de l\'upload du logo');
     } finally {
       setUploading(false);
     }
