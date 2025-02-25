@@ -67,6 +67,9 @@ export async function generateFacturePDF(
 ): Promise<Buffer> {
   try {
     console.log('🚀 Initialisation du navigateur')
+    console.log('🔍 Chromium path:', await chromium.executablePath)
+    console.log('🔧 Chromium args:', chromium.args)
+
     const browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
