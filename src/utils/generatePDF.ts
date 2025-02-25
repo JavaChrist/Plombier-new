@@ -1,8 +1,8 @@
 import chromium from '@sparticuz/chromium'
 import puppeteer from 'puppeteer-core'
-import { FirebaseApp } from 'firebase/app'
-import { getStorage, ref, getDownloadURL } from 'firebase/storage'
 import type { ConsoleMessage, HTTPRequest } from 'puppeteer-core'
+import type { FirebaseApp } from 'firebase/app'
+import { getStorage, ref, getDownloadURL } from 'firebase/storage'
 
 interface LigneFacture {
   reference: string
