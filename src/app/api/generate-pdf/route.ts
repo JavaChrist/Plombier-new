@@ -21,16 +21,41 @@ const app = initializeApp(firebaseConfig, 'pdf-generation')
 export async function POST(request: Request) {
   try {
     console.log('📝 Début de la génération du PDF')
-    const { facture, entreprise } = await request.json()
-    console.log('✅ Données reçues:', { numeroFacture: facture.numeroFacture })
+    const data = await request.json()
 
-    const pdfBuffer = await generateFacturePDF(facture, entreprise, app)
+    // Validation des données
+    if (!data.facture || !data.entreprise) {
+      console.error('❌ Données manquantes:', data)
+      return NextResponse.json(
+        {
+          error: 'Données invalides',
+          details: 'Facture ou entreprise manquante',
+        },
+        { status: 400 }
+      )
+    }
+
+    console.log('✅ Données reçues:', {
+      facture: {
+        numero: data.facture.numeroFacture,
+        client: `${data.facture.client.nom} ${data.facture.client.prenom}`,
+      },
+      entreprise: {
+        siret: data.entreprise.siret,
+      },
+    })
+
+    const pdfBuffer = await generateFacturePDF(
+      data.facture,
+      data.entreprise,
+      app
+    )
     console.log('✅ PDF généré avec succès')
 
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `inline; filename="Facture_${facture.numeroFacture}.pdf"`,
+        'Content-Disposition': `inline; filename="Facture_${data.facture.numeroFacture}.pdf"`,
       },
     })
   } catch (error) {
