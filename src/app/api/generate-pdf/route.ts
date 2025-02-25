@@ -33,12 +33,9 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error("❌ Erreur détaillée:", error);
+    console.error("❌ Erreur:", error);
     return NextResponse.json(
-      { 
-        error: "Erreur lors de la génération du PDF",
-        details: error instanceof Error ? error.message : "Erreur inconnue"
-      },
+      { error: "Erreur lors de la génération du PDF" },
       { status: 500 }
     );
   }
