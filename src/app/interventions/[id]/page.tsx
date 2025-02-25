@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import InterventionDetails from './intervention-details'
 
+// Added for deployment - v1.0.1
 export default function InterventionPage() {
   return (
     <div className='container mx-auto px-4'>
