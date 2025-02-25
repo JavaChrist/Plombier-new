@@ -5,3 +5,6 @@ export default function ClientsPage() {
     </div>
   )
 } 
+// TODO: Ajouter un bouton pour créer un nouveau client
+
+
