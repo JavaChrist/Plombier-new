@@ -1,3 +1,4 @@
+// ❌ Supprimer ou remplacer ces imports
 import chromium from '@sparticuz/chromium'
 import puppeteer from 'puppeteer-core'
 import type { ConsoleMessage, HTTPRequest } from 'puppeteer-core'
@@ -65,12 +66,14 @@ export async function generateFacturePDF(
   firebaseApp: FirebaseApp
 ): Promise<Buffer> {
   try {
+    console.log('🚀 Initialisation du navigateur')
     const browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath,
       headless: true,
     })
+    console.log('✅ Navigateur initialisé')
 
     // Récupérer le logo en base64
     let logoBase64 = ''
@@ -376,6 +379,7 @@ export async function generateFacturePDF(
       )
     })
 
+    console.log('📄 Génération du PDF')
     const pdf = await page.pdf({
       format: 'A4',
       margin: {
@@ -386,11 +390,12 @@ export async function generateFacturePDF(
       },
       printBackground: true,
     })
+    console.log('✅ PDF généré')
 
     await browser.close()
     return Buffer.from(pdf)
   } catch (error) {
-    console.error('❌ Erreur lors de la génération du PDF:', error)
+    console.error('❌ Erreur détaillée lors de la génération du PDF:', error)
     throw error
   }
 }
