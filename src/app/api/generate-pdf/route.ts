@@ -1,71 +1,59 @@
-import { NextResponse } from 'next/server'
-import { generateFacturePDF } from '@/utils/generatePDF'
-import { initializeApp } from 'firebase/app'
+export const dynamic = 'force-dynamic'; // Empêche la mise en cache des requêtes API
+export const runtime = 'nodejs'; // ⚠️ Assure l'exécution en Node.js (obligatoire pour Puppeteer)
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-}
-
-// Vérifier que toutes les variables d'environnement sont définies
-if (!firebaseConfig.projectId) {
-  throw new Error('Configuration Firebase incomplète : projectId manquant')
-}
-
-const app = initializeApp(firebaseConfig, 'pdf-generation')
+import { NextResponse } from 'next/server';
+import { generateFacturePDF } from '@/utils/generatePDF';
 
 export async function POST(request: Request) {
   try {
-    console.log('📝 Début de la génération du PDF')
-    const data = await request.json()
+    console.log("🔍 [API] Requête reçue pour générer un PDF...");
 
-    // Validation des données
-    if (!data.facture || !data.entreprise) {
-      console.error('❌ Données manquantes:', data)
-      return NextResponse.json(
-        {
-          error: 'Données invalides',
-          details: 'Facture ou entreprise manquante',
-        },
-        { status: 400 }
-      )
+    // Lire les données envoyées
+    const { facture, entreprise } = await request.json();
+
+    // Vérifier que les données sont bien reçues
+    if (!facture || !facture.numeroFacture) {
+      throw new Error("❌ Données de facture invalides ou numéro manquant !");
     }
 
-    console.log('✅ Données reçues:', {
-      facture: {
-        numero: data.facture.numeroFacture,
-        client: `${data.facture.client.nom} ${data.facture.client.prenom}`,
-      },
-      entreprise: {
-        siret: data.entreprise.siret,
-      },
-    })
+    console.log("📄 [API] Génération du PDF pour la facture :", facture.numeroFacture);
 
-    const pdfBuffer = await generateFacturePDF(
-      data.facture,
-      data.entreprise,
-      app
-    )
-    console.log('✅ PDF généré avec succès')
+    // Générer le PDF avec Puppeteer
+    const pdfBuffer = await generateFacturePDF(facture, entreprise);
+    
+    console.log("✅ [API] PDF généré avec succès !");
 
+    // Retourner le PDF sous forme de réponse
     return new NextResponse(pdfBuffer, {
+      status: 200,
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `inline; filename="Facture_${data.facture.numeroFacture}.pdf"`,
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="Facture_${facture.numeroFacture}.pdf"`,
       },
-    })
+    });
+
   } catch (error) {
-    console.error('❌ Erreur détaillée:', error)
+    console.error("❌ [API] Erreur détaillée :", error);
+
     return NextResponse.json(
       {
-        error: 'Erreur lors de la génération du PDF',
-        details: error instanceof Error ? error.message : 'Erreur inconnue',
+        error: "Erreur lors de la génération du PDF",
+        details: error instanceof Error ? error.message : "Erreur inconnue",
       },
       { status: 500 }
-    )
+    );
   }
+}
+
+// 🚨 Gestion des autres méthodes HTTP (évite les erreurs 405)
+export function GET() {
+  return NextResponse.json({ error: "Méthode GET non autorisée" }, { status: 405 });
+}
+
+export function PUT() {
+  return NextResponse.json({ error: "Méthode PUT non autorisée" }, { status: 405 });
+}
+
+export function DELETE() {
+  return NextResponse.json({ error: "Méthode DELETE non autorisée" }, { status: 405 });
 }

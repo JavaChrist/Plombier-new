@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       throw new Error(`Erreur de connexion SMTP: ${error.message}`)
     }
 
-    const pdfBuffer = await generateFacturePDF(facture, entreprise, app)
+    const pdfBuffer = await generateFacturePDF(facture, entreprise)
 
     const mailOptions = {
       from: process.env.SMTP_FROM,
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
       attachments: [
         {
           filename: `Facture_${facture.numeroFacture}.pdf`,
-          content: Buffer.from(pdfBuffer),
+          content: pdfBuffer,
         },
       ],
     }
