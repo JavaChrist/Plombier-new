@@ -107,3 +107,4 @@ Ce projet est sous licence **MIT**.
 ---
 
 🚀 *Développement en cours - Version 1.2.0*
+<!-- commentaire pour un commit -->
