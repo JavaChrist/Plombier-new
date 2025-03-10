@@ -65,8 +65,8 @@ export async function generateFacturePDF(
 
     let executablePath: string | null = null
     try {
-      executablePath = await chromium.executablePath // Pas de parenthèses, c'est une promesse
-      console.log('🔍 Chemin Chromium détecté:', executablePath)
+      executablePath = await chromium.executablePath
+      console.log('🚀 Chemin Chromium détecté:', executablePath)
     } catch (error) {
       console.error("❌ Impossible d'obtenir le chemin de Chromium :", error)
       executablePath = null
@@ -75,7 +75,7 @@ export async function generateFacturePDF(
     const browser = await puppeteer.launch({
       args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
       defaultViewport: chromium.defaultViewport,
-      executablePath: executablePath || undefined, // Si Chromium est absent, Puppeteer essaiera une autre méthode
+      executablePath: executablePath || undefined,
       ignoreHTTPSErrors: true,
       headless: chromium.headless,
     })
@@ -166,7 +166,7 @@ export async function generateFacturePDF(
 
     const page = await browser.newPage()
     await page.setContent(html)
-    await page.waitForTimeout(500) // Ajout d'un délai pour s'assurer du rendu du HTML
+    await page.waitForTimeout(500)
 
     console.log('📄 Génération du PDF...')
     const pdf = await page.pdf({

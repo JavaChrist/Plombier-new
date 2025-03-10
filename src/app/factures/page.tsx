@@ -210,13 +210,19 @@ export default function ListeFactures() {
       })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(
-          errorData.details ||
-            `Erreur serveur (${response.status}): ${
-              errorData.error || 'Erreur inconnue'
-            }`
-        )
+        let errorMessage = `Erreur serveur (${response.status}): Erreur inconnue`
+        try {
+          const errorData = await response.json()
+          errorMessage =
+            errorData.details ||
+            `Erreur serveur (${response.status}): ${errorData.error || 'Erreur inconnue'}`
+        } catch (jsonError) {
+          console.error(
+            "Erreur lors de l'analyse de la réponse JSON:",
+            jsonError
+          )
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
